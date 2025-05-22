@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Register - My Flask App{% endblock %}
+
+{% block content %}
+<h2>Register</h2>
+
+{% if errors and errors.form %}
+    <div class="form-error error">{{ errors.form }}</div>
+{% endif %}
+
+<form method="POST" action="{{ url_for('auth.register') }}">
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" value="{{ request.form.username if request and request.form else '' }}" required>
+        {% if errors and errors.username %}
+            <span class="error">
+                {% if errors.username is string %}
+                    {{ errors.username }}
+                {% else %}
+                    <ul>
+                    {% for error in errors.username %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </span>
+        {% endif %}
+    </div>
+
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ request.form.email if request and request.form else '' }}" required>
+        {% if errors and errors.email %}
+            <span class="error">
+                {% if errors.email is string %}
+                    {{ errors.email }}
+                {% else %}
+                    <ul>
+                    {% for error in errors.email %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </span>
+        {% endif %}
+    </div>
+
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <div id="password-strength-meter"></div> <!-- For password strength display -->
+        {% if errors and errors.password %}
+            <span class="error">
+                {% if errors.password is string %}
+                    {{ errors.password }}
+                {% else %}
+                    <ul>
+                    {% for error in errors.password %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </span>
+        {% endif %}
+    </div>
+
+    <div>
+        <label for="password_confirm">Confirm Password:</label>
+        <input type="password" id="password_confirm" name="password_confirm" required>
+        {% if errors and errors.password_confirm %}
+            <span class="error">
+                {% if errors.password_confirm is string %}
+                    {{ errors.password_confirm }}
+                {% else %}
+                    <ul>
+                    {% for error in errors.password_confirm %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </span>
+        {% endif %}
+    </div>
+
+    <button type="submit">Register</button>
+</form>
+
+<p>Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>.</p>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Placeholder for script that might interact with password field or strength meter
+    // For example, a script to update the password strength meter
+    // const passwordInput = document.getElementById('password');
+    // const strengthMeter = document.getElementById('password-strength-meter');
+    // passwordInput.addEventListener('input', function() {
+    //     // Logic to calculate strength and update meter
+    //     // strengthMeter.textContent = 'Strength: ...';
+    // });
+</script>
+{% endblock %}

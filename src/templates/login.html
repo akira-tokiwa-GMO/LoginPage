@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Login - My Flask App{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flashed-messages">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% if errors and errors.form %}
+    <div class="form-error error-summary"><p>{{ errors.form }}</p></div>
+{% endif %}
+
+<form method="POST" action="{{ url_for('auth.login') }}">
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ request.form.email or email or '' }}" required>
+        {% if errors and errors.email %}
+            {# Though less common for login, display if present #}
+            <span class="error">{{ errors.email }}</span> 
+        {% endif %}
+    </div>
+
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        {% if errors and errors.password %}
+            {# Though less common for login, display if present #}
+            <span class="error">{{ errors.password }}</span>
+        {% endif %}
+    </div>
+
+    <button type="submit">Login</button>
+</form>
+
+<p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a>.</p>
+{% endblock %}

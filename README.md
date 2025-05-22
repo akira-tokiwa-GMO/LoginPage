@@ -1,93 +1,115 @@
-## 1. はじめに
-### 1.1 目的
-本ドキュメントは、ローカル SQLite にユーザーテーブルを持つ認証機能付き Web アプリケーションの要件を定義し、
-システム開発チームおよびステークホルダー間の共通理解を確立することを目的とします。
+# Flask Authentication App
 
-### 1.2 範囲
-- **In-Scope**: ユーザー登録、ログイン認証、成功ページ、ログアウト
-- **Out-Of-Scope**: パスワードリセット、多要素認証（MFA）、管理者機能、外部サービス連携
+![Build Status](https://img.shields.io/github/actions/workflow/status/your-username/your-repo-name/.github/workflows/main.yml?branch=main)
+![Code Coverage](https://img.shields.io/codecov/c/github/your-username/your-repo-name)
+![License](https://img.shields.io/github/license/your-username/your-repo-name)
+_(Note: Replace badge URLs with actual links once CI/CD and code coverage are fully set up and a LICENSE file is added.)_
 
-## 2. 用語集
-| 用語           | 定義                                   |
-|----------------|----------------------------------------|
-| SRS            | Software Requirements Specification    |
-| MVP            | Minimum Viable Product                 |
-| WAL            | Write-Ahead Logging                    |
+## Overview/Description
 
-## 3. 機能要件 (Functional Requirements) 
-### 3.1 ユーザー登録
-- **入力項目**: ユーザー名（必須, <=50 文字）、メールアドレス（必須, フォーマット検証）、パスワード（必須, 強度チェック）
-- **バリデーション**: 入力エラー時にフィールド毎のメッセージを表示
-- **保存**: パスワードはハッシュ化（bcrypt 推奨）して保存
+This project is a Flask-based web application designed to provide core user authentication functionalities. It serves as a practical example or a boilerplate for applications requiring user registration, login/logout capabilities, and session management, along with a simple protected dashboard area. 
 
-### 3.2 ログイン
-- **入力項目**: メールアドレス, パスワード
-- **認証**: ハッシュ比較による認証処理
-- **遷移**: 認証成功 → 成功ページ、失敗 → エラーメッセージ表示
+Key technologies used include Python, Flask for the web framework, and SQLite for the database, ensuring a lightweight and portable setup. The application emphasizes secure password handling using bcrypt and structured data validation with Marshmallow.
 
-### 3.3 成功ページ (Dashboard)
-- **表示内容**: ようこそメッセージ（ユーザー名表示）
-- **操作**: ログアウトボタン（セッション破棄後、ログインページへ遷移）
+## Features
 
-## 4. 非機能要件 (Non-functional Requirements) 
-### 4.1 セキュリティ
-- **パスワード管理**: bcrypt ハッシュ保存
-- **セッション管理**: HTTP-Only Cookie、CSRF トークン、15 分のセッションタイムアウト
-- **パスワード強度メーター**: ユーザビリティ向上のため実装
+*   **User Registration**: Securely register new users with email, username, and password. Passwords are hashed using bcrypt. Includes comprehensive password strength validation.
+*   **User Login & Session Management**: Authenticate existing users and manage sessions. Sessions are configured with a defined timeout.
+*   **Protected Dashboard**: A simple dashboard page accessible only to authenticated users.
+*   **Logout**: Allows authenticated users to securely end their session.
+*   **Password Strength Meter**: Client-side JavaScript provides real-time feedback on password strength during registration.
+*   **Structured Validation**: Uses Marshmallow for robust server-side validation of registration data and a custom schema for login data.
+*   **Modular Design**: Organized using Flask Blueprints for authentication (`auth`) and main application logic (`main`).
 
-### 4.2 パフォーマンス
-- SQLite の **WAL モード**を有効化し、同時書き込み性能を向上
-- 適宜 **インデックス**を設計（メールアドレスにユニークインデックス）
+## Project Structure
 
-### 4.3 可用性・信頼性
-- ローカル DB ファイルの**バックアップ／リストア手順**をドキュメント化
-- **ログ出力レベル**（INFO/ERROR）を統一
+A high-level overview of the project's directory structure:
 
-### 4.4 保守性・拡張性
-- **モジュール設計**: MVC パターン採用
-- **テスト**: ユニットテスト、統合テストのカバレッジ確保
+```
+flask-auth-app/
+├── .github/         # GitHub Actions CI Workflows (e.g., main.yml)
+├── docs/            # Project documentation (setup.md, architecture.md, database.md)
+├── instance/        # Instance-specific files (e.g., SQLite DB - app_database.db), gitignored
+├── src/             # Application source code
+│   ├── auth/        # Authentication blueprint (routes, services)
+│   ├── main/        # Main application blueprint (dashboard, index)
+│   ├── core/        # Core components (database.py for DB connection)
+│   ├── static/      # Static assets (CSS, JavaScript)
+│   ├── templates/   # HTML templates (Jinja2)
+│   ├── models.py    # Password hashing utilities 
+│   ├── schemas.py   # Data validation schemas (Marshmallow & custom)
+│   └── app.py       # Flask application factory & init-db command
+├── tests/           # Unit and Integration tests
+│   ├── unit/        # Tests for individual modules
+│   └── integration/ # Tests for application routes and flows
+│   └── conftest.py  # Pytest fixtures and configuration
+├── .flaskenv        # Environment variables for Flask CLI (gitignored locally)
+├── requirements.txt # Application dependencies
+├── README.md        # This file
+└── LICENSE          # (To be added) Project license file
+```
 
-### 4.5 ユーザビリティ・アクセシビリティ
-- WCAG 2.1 レベル AA 準拠
-- レスポンシブデザイン対応
+## Getting Started / Setup
 
-## 5. データ要件 (Data Requirements) 
-```sql
-CREATE TABLE user (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT NOT NULL CHECK(length(username) <= 50),
-  email TEXT NOT NULL UNIQUE,
-  password_hash TEXT NOT NULL,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-PRAGMA journal_mode = WAL;
-````
+For detailed setup instructions, please see the [Development Setup Guide](docs/setup.md).
 
-## 6. 受け入れ基準 (Acceptance Criteria) 
+**Quick Start:**
 
-* **登録成功**: Given 正しい情報, When 「登録」クリック, Then 「ログインページへリダイレクト」
-* **パスワード強度不足**: Given 弱いパスワード, When 入力完了, Then エラー「パスワードが弱すぎます」
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd <project-name>
+    ```
+2.  **Create and activate a virtual environment:**
+    ```bash
+    # macOS/Linux
+    python3 -m venv venv
+    source venv/bin/activate
+    # Windows
+    # python -m venv venv
+    # .\venv\Scripts\activate
+    ```
+3.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    # For development (linters, testing tools)
+    pip install flake8 black isort pytest pytest-cov 
+    ```
+4.  **Configure environment variables:**
+    Create a `.flaskenv` file in the project root with the following (adjust `SECRET_KEY`):
+    ```env
+    FLASK_APP=src.app
+    FLASK_DEBUG=1
+    SECRET_KEY=your_strong_and_unique_secret_key
+    ```
+5.  **Initialize the database:**
+    ```bash
+    flask init-db
+    ```
+6.  **Run the development server:**
+    ```bash
+    flask run
+    ```
+    The application will typically be available at `http://127.0.0.1:5000/`.
 
-## 7. 制約事項
+## Running Tests
 
-* **プラットフォーム**: ローカル環境限定（SQLite 利用）
-* **言語／フレームワーク**: Python 3.9+, Flask 2.x
+*   To run all unit and integration tests:
+    ```bash
+    pytest
+    ```
+*   To run tests with code coverage analysis for the `src` directory:
+    ```bash
+    pytest --cov=src
+    ```
 
-## 8. 将来拡張 (Future Scope)
+## Contributing
 
-* パスワードリセット／MFA
-* プロファイル編集機能
-* 多言語対応
+Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute to this project.
+_(Note: `CONTRIBUTING.md` needs to be created)_
 
-## 9. MVP 要件 
+## License
 
-* ユーザー登録（ハッシュ化保存）
-* ログイン／セッション管理
-* 成功ページ表示
-* 基本的なエラーメッセージ
-
-## 10. 依存関係・技術選定
-
-* Python 3.9+, Flask, SQLite, bcrypt ライブラリ
-* フロントエンド: HTML/CSS/JavaScript (Vanilla or Bootstrap)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+_(Note: `LICENSE` file needs to be created and the MIT License text added to it)_
+```
