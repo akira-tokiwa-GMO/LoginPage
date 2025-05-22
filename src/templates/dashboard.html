@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - My Flask App{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flashed-messages">
+      {% for category, message in messages %}
+        {# Typically, login success message is flashed before redirect to dashboard #}
+        {# but good to have this structure if other actions redirect here with messages #}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<h3>Welcome, {{ username }}!</h3>
+
+<p>This is your dashboard. More features coming soon!</p>
+
+<form action="{{ url_for('auth.logout') }}" method="POST" style="display: inline;">
+    <button type="submit">Logout</button>
+</form>
+{% endblock %}
