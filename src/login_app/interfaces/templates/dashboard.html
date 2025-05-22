@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}ダッシュボード{% endblock %}
+{% block content %}
+<h1>ようこそ、{{ user.username }} さん</h1>
+<form method="post" action="{{ url_for('auth.logout') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+  <button type="submit" class="btn btn-secondary">ログアウト</button>
+</form>
+{% endblock %}

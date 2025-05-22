@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}ログイン{% endblock %}
+{% block content %}
+<h1>ログイン</h1>
+{% if error %}
+<div class="alert alert-danger" role="alert">{{ error }}</div>
+{% endif %}
+<form method="post" aria-label="ログインフォーム" novalidate>
+  <div class="mb-3">
+    <label for="email" class="form-label">メールアドレス</label>
+    <input type="email" id="email" name="email" class="form-control" required aria-required="true" />
+  </div>
+  <div class="mb-3">
+    <label for="password" class="form-label">パスワード</label>
+    <input type="password" id="password" name="password" class="form-control" required aria-required="true" />
+  </div>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+  <button type="submit" class="btn btn-primary">ログイン</button>
+</form>
+<p class="mt-2"><a href="{{ url_for('auth.register') }}">ユーザー登録</a></p>
+{% endblock %}
