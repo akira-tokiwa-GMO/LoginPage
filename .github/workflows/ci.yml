@@ -24,4 +24,6 @@ jobs:
       - name: Lint
         run: flake8
       - name: Test
-        run: pytest
+        run: |
+          pytest --cov=login_app --cov-report=term-missing:skip-covered \
+            --cov-fail-under=80
