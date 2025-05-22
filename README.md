@@ -91,3 +91,12 @@ PRAGMA journal_mode = WAL;
 
 * Python 3.9+, Flask, SQLite, bcrypt ライブラリ
 * フロントエンド: HTML/CSS/JavaScript (Vanilla or Bootstrap)
+
+## 11. セットアップ
+
+```bash
+pip install -e .[dev]
+init-db
+```
+
+上記コマンドで依存関係のインストールとデータベース初期化が行えます。

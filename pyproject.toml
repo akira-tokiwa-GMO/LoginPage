@@ -1,0 +1,38 @@
+[project]
+name = "login-app"
+version = "0.1.0"
+description = "A Flask authentication app"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  { name = "Example", email = "example@example.com" }
+]
+
+dependencies = [
+  "Flask",
+  "bcrypt",
+  "openai-agents-sdk"
+]
+
+[project.optional-dependencies]
+dev = [
+  "black",
+  "isort",
+  "flake8",
+  "pytest"
+]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+init-db = "init_db:main"
