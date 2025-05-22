@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import secrets
+
 from flask import Flask, abort, request, session
 
 
